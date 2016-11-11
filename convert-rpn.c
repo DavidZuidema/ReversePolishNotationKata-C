@@ -2,8 +2,12 @@
 
 int isValidOperator(char subject)
 {
-    if ('+' == subject || '-' == subject || '*' == subject) {
+    switch (subject) {
+    case '+':
+    case '-':
+    case '*':
         return 1;
+    default:
+        return 0;
     }
-    return 0;
 }
