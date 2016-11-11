@@ -6,6 +6,7 @@ int isValidOperator(char subject)
     case '+':
     case '-':
     case '*':
+    case '/':
         return 1;
     default:
         return 0;
