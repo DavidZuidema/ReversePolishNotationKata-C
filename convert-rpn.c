@@ -2,5 +2,8 @@
 
 int isValidOperator(char *subject)
 {
-    return 1;
+    if (subject[0] == '+') {
+        return 1;
+    }
+    return 0;
 }
