@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <check.h>
 
-START_TEST(test_foo)
+START_TEST(isValidOperator_returnsFalse)
 {
-    ck_assert_int_eq(1, 1);
+    ck_assert_int_eq(0, isValidOperator(""));
 }
 END_TEST
 
@@ -15,7 +15,8 @@ Suite * suite_convert_rpn_create(void)
     suite = suite_create("Convert Infix to Reverse Polish Notation");
     tc_core = tcase_create("Core");
 
-    tcase_add_test(tc_core, test_foo);
+    tcase_add_test(tc_core, isValidOperator_returnsFalse);
+
     suite_add_tcase(suite, tc_core);
 
     return suite;
