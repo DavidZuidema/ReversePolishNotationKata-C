@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <check.h>
+#include "convert-rpn.h"
 
 START_TEST(isValidOperator_returnsFalse)
 {
