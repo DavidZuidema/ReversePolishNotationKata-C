@@ -18,6 +18,12 @@ START_TEST(isValidOperator_withInvalidOperators_returnsFalse)
 }
 END_TEST
 
+START_TEST(isValidOperand_withValidOperands_returnsTrue)
+{
+    ck_assert_int_eq(1, isValidOperand('a'));
+}
+END_TEST
+
 START_TEST(isValidOperand_withInvalidOperands_returnsFalse)
 {
     ck_assert_int_eq(0, isValidOperand('`'));
@@ -35,6 +41,7 @@ Suite * suite_convert_rpn_create(void)
 
     tcase_add_test(tc_core, isValidOperator_withValidOperators_returnsTrue);
     tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
+    tcase_add_test(tc_core, isValidOperand_withValidOperands_returnsTrue);
     tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
 
     suite_add_tcase(suite, tc_core);
