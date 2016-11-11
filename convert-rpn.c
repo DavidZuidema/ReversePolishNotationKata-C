@@ -13,3 +13,8 @@ int isValidOperator(char subject)
         return 0;
     }
 }
+
+int isValidOperand(char subject)
+{
+    return 0;
+}
