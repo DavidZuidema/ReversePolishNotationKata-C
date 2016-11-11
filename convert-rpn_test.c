@@ -8,6 +8,7 @@ START_TEST(isValidOperator_withValidOperators_returnsTrue)
     ck_assert_int_eq(1, isValidOperator('-'));
     ck_assert_int_eq(1, isValidOperator('*'));
     ck_assert_int_eq(1, isValidOperator('/'));
+    ck_assert_int_eq(1, isValidOperator('^'));
 }
 END_TEST
 
