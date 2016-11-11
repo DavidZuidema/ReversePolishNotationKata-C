@@ -1,4 +1,4 @@
-#Reverse Polish Notation Calculator
+#Reverse Polish Notation Converter
 ##Solution in C99
 
 ###Dependencies
