@@ -1,8 +1,8 @@
 #include "convert-rpn.h"
 
-int isValidOperator(char *subject)
+int isValidOperator(char subject)
 {
-    if (subject[0] == '+') {
+    if ('+' == subject) {
         return 1;
     }
     return 0;

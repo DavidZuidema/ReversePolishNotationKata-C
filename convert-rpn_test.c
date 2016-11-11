@@ -4,13 +4,13 @@
 
 START_TEST(isValidOperator_withPlus_returnsTrue)
 {
-    ck_assert_int_eq(1, isValidOperator("+"));
+    ck_assert_int_eq(1, isValidOperator('+'));
 }
 END_TEST
 
 START_TEST(isValidOperator_withModulo_returnsFalse)
 {
-    ck_assert_int_eq(0, isValidOperator("&"));
+    ck_assert_int_eq(0, isValidOperator('%'));
 }
 END_TEST
 
