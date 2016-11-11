@@ -2,7 +2,7 @@
 
 int isValidOperator(char subject)
 {
-    if ('+' == subject || '-' == subject) {
+    if ('+' == subject || '-' == subject || '*' == subject) {
         return 1;
     }
     return 0;
