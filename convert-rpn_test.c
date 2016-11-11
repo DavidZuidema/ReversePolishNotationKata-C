@@ -2,9 +2,9 @@
 #include <check.h>
 #include "convert-rpn.h"
 
-START_TEST(isValidOperator_returnsFalse)
+START_TEST(isValidOperator_withPlus_returnsTrue)
 {
-    ck_assert_int_eq(0, isValidOperator(""));
+    ck_assert_int_eq(1, isValidOperator("+"));
 }
 END_TEST
 
@@ -16,7 +16,7 @@ Suite * suite_convert_rpn_create(void)
     suite = suite_create("Convert Infix to Reverse Polish Notation");
     tc_core = tcase_create("Core");
 
-    tcase_add_test(tc_core, isValidOperator_returnsFalse);
+    tcase_add_test(tc_core, isValidOperator_withPlus_returnsTrue);
 
     suite_add_tcase(suite, tc_core);
 
