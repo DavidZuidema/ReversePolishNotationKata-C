@@ -8,6 +8,12 @@ START_TEST(isValidOperator_withPlus_returnsTrue)
 }
 END_TEST
 
+START_TEST(isValidOperator_withModulo_returnsFalse)
+{
+    ck_assert_int_eq(0, isValidOperator("&"));
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -17,6 +23,7 @@ Suite * suite_convert_rpn_create(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, isValidOperator_withPlus_returnsTrue);
+    tcase_add_test(tc_core, isValidOperator_withModulo_returnsFalse);
 
     suite_add_tcase(suite, tc_core);
 
