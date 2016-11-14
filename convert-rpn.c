@@ -20,3 +20,8 @@ int isValidOperand(char subject)
         return 1;
     return 0;
 }
+
+RpnErrorType infixToReversePolish(char *in, char *out, int length)
+{
+    
+}
