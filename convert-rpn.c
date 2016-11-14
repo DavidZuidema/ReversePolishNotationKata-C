@@ -35,22 +35,24 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
     }
 
     for (int inIndex = 0; (c = in[inIndex]) != '\0' && inIndex < length; inIndex++) {
+
         if (expecting == OPERAND) {
+
             if (!isValidOperand(c))
                 return RPN_PARSE_ERROR_INVALID_OPERAND;
+
             out[outIndex++] = c;
+            expecting = OPERATOR;
+
             if (operator != '\0') {
                 out[outIndex++] = operator;
                 operator = '\0';
             }
-            expecting = OPERATOR;
-            continue;
-        }
 
-        if (expecting == OPERATOR) {
+
+        } else if (expecting == OPERATOR) {
             operator = c;
             expecting = OPERAND;
-            continue;
         }
     }
 
