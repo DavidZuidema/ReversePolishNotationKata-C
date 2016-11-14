@@ -67,6 +67,13 @@ START_TEST(infixToReversePolish_withSingleOperandExp_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withTwoAdjacentOperands_returnsError)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_PARSE_ERROR_INVALID_OPERATOR, infixToReversePolish("aa", actual, MAX_EXPRESSION_LENGTH));
+}
+END_TEST
+
 START_TEST(infixToReversePolish_withBinaryAddition_outputsCorrectly)
 {
     char actual[MAX_EXPRESSION_LENGTH];
@@ -92,6 +99,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_core, infixToReversePolish_withInvalidOperand_returnsError);
     tcase_add_test(tc_core, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
     tcase_add_test(tc_core, infixToReversePolish_withBinaryAddition_outputsCorrectly);
+    tcase_add_test(tc_core, infixToReversePolish_withTwoAdjacentOperands_returnsError);
 
     suite_add_tcase(suite, tc_core);
 
