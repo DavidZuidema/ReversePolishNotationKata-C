@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "convert-rpn.h"
 
 int isValidOperator(char subject)
@@ -23,5 +24,8 @@ int isValidOperand(char subject)
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
+    if (in == NULL) {
+        return RPN_INVALID_ARGS;
+    }
     return RPN_SUCCESS;
 }
