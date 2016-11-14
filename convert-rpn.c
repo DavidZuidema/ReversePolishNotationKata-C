@@ -51,6 +51,10 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
 
 
         } else if (expecting == OPERATOR) {
+
+            if (!isValidOperator(c))
+                return RPN_PARSE_ERROR_INVALID_OPERATOR;
+
             operator = c;
             expecting = OPERAND;
         }
