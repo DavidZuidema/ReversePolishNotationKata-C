@@ -16,7 +16,7 @@ int isValidOperator(char subject)
 
 int isValidOperand(char subject)
 {
-    if ('a' == subject || 'b' == subject)
+    if ('a' == subject || 'b' == subject || 'c' == subject)
         return 1;
     return 0;
 }
