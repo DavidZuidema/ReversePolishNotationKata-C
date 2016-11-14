@@ -52,6 +52,13 @@ START_TEST(infixToReversePolish_withInvalidArgs_returnsError)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withInvalidOperand_returnsError)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_PARSE_ERROR_INVALID_OPERAND, infixToReversePolish("A", actual, MAX_EXPRESSION_LENGTH));
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -66,6 +73,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
     tcase_add_test(tc_core, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_core, infixToReversePolish_withInvalidArgs_returnsError);
+    tcase_add_test(tc_core, infixToReversePolish_withInvalidOperand_returnsError);
 
     suite_add_tcase(suite, tc_core);
 
