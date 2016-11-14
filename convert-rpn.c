@@ -24,36 +24,40 @@ typedef enum { OPERAND, OPERATOR } SymbolType;
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
-    int outIndex = 0;
-    char c, operator;
+    int inIndex = 0, outIndex = 0;
+    char current, operator;
     SymbolType expecting = OPERAND;
 
-    if (in == NULL || out == NULL || length < 1) {
+    if (in == NULL || out == NULL || length < 1)
         return RPN_INVALID_ARGS;
-    }
 
-    for (int inIndex = 0; (c = in[inIndex]) != '\0' && inIndex < length; inIndex++) {
+    while (inIndex < length && outIndex < length)
+    {
+        current = in[inIndex++];
 
-        if (expecting == OPERAND) {
+        if (current == '\0')
+            break;
 
-            if (!isValidOperand(c))
+        if (expecting == OPERAND)
+        {
+            if (!isValidOperand(current))
                 return RPN_PARSE_ERROR_INVALID_OPERAND;
 
-            out[outIndex++] = c;
+            out[outIndex++] = current;
             expecting = OPERATOR;
 
-            if (operator != '\0') {
+            if (operator != '\0')
+            {
                 out[outIndex++] = operator;
                 operator = '\0';
             }
-
-
-        } else if (expecting == OPERATOR) {
-
-            if (!isValidOperator(c))
+        }
+        else if (expecting == OPERATOR)
+        {
+            if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            operator = c;
+            operator = current;
             expecting = OPERAND;
         }
     }
