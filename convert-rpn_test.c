@@ -21,6 +21,7 @@ END_TEST
 START_TEST(isValidOperand_withValidOperands_returnsTrue)
 {
     ck_assert_int_eq(1, isValidOperand('a'));
+    ck_assert_int_eq(1, isValidOperand('b'));
 }
 END_TEST
 
