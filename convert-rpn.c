@@ -24,8 +24,17 @@ int isValidOperand(char subject)
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
+    char c;
+
     if (in == NULL || out == NULL || length < 1) {
         return RPN_INVALID_ARGS;
     }
+
+    for (int i = 0; (c = in[i]) != '\0' && i < length; i++) {
+        if (!isValidOperand(c)) {
+            return RPN_PARSE_ERROR_INVALID_OPERAND;
+        }
+    }
+
     return RPN_SUCCESS;
 }
