@@ -23,6 +23,7 @@ START_TEST(isValidOperand_withValidOperands_returnsTrue)
     ck_assert_int_eq(1, isValidOperand('a'));
     ck_assert_int_eq(1, isValidOperand('b'));
     ck_assert_int_eq(1, isValidOperand('c'));
+    ck_assert_int_eq(1, isValidOperand('z'));
 }
 END_TEST
 
