@@ -31,7 +31,9 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
     }
 
     for (int i = 0; (c = in[i]) != '\0' && i < length; i++) {
-        if (!isValidOperand(c)) {
+        if (isValidOperand(c)) {
+            out[i] = c;
+        } else {
             return RPN_PARSE_ERROR_INVALID_OPERAND;
         }
     }
