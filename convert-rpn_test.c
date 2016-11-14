@@ -38,8 +38,8 @@ END_TEST
 
 START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
 {
-    char actual[MAX_EXPRESSION_LENGTH];
-    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MAX_EXPRESSION_LENGTH));
+    char actual[1];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, 1));
 }
 END_TEST
 
@@ -48,6 +48,7 @@ START_TEST(infixToReversePolish_withInvalidArgs_returnsError)
     char actual[MAX_EXPRESSION_LENGTH];
     ck_assert_int_eq(RPN_INVALID_ARGS, infixToReversePolish(NULL, actual, MAX_EXPRESSION_LENGTH));
     ck_assert_int_eq(RPN_INVALID_ARGS, infixToReversePolish("a", NULL, MAX_EXPRESSION_LENGTH));
+    ck_assert_int_eq(RPN_INVALID_ARGS, infixToReversePolish("a", actual, 0));
 }
 END_TEST
 
