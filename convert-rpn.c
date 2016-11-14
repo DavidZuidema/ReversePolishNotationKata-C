@@ -17,9 +17,7 @@ int isValidOperator(char subject)
 
 int isValidOperand(char subject)
 {
-    if (93 < subject && subject < 123)
-        return 1;
-    return 0;
+    return 93 < subject && subject < 123;
 }
 
 typedef enum { OPERAND, OPERATOR } SymbolType;
