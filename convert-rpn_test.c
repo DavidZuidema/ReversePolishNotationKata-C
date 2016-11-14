@@ -82,6 +82,38 @@ START_TEST(infixToReversePolish_withBinaryAddition_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withBinarySubtraction_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a-b", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "ab-");
+}
+END_TEST
+
+START_TEST(infixToReversePolish_withBinaryMultiplication_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a*b", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "ab*");
+}
+END_TEST
+
+START_TEST(infixToReversePolish_withBinaryDivision_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a/b", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "ab/");
+}
+END_TEST
+
+START_TEST(infixToReversePolish_withBinaryExponentiation_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a^b", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "ab^");
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -98,8 +130,13 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_core, infixToReversePolish_withInvalidArgs_returnsError);
     tcase_add_test(tc_core, infixToReversePolish_withInvalidOperand_returnsError);
     tcase_add_test(tc_core, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withBinaryAddition_outputsCorrectly);
     tcase_add_test(tc_core, infixToReversePolish_withTwoAdjacentOperands_returnsError);
+    tcase_add_test(tc_core, infixToReversePolish_withBinaryAddition_outputsCorrectly);
+    tcase_add_test(tc_core, infixToReversePolish_withBinarySubtraction_outputsCorrectly);
+    tcase_add_test(tc_core, infixToReversePolish_withBinaryMultiplication_outputsCorrectly);
+    tcase_add_test(tc_core, infixToReversePolish_withBinaryDivision_outputsCorrectly);
+    tcase_add_test(tc_core, infixToReversePolish_withBinaryExponentiation_outputsCorrectly);
+
 
     suite_add_tcase(suite, tc_core);
 
