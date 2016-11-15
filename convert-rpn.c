@@ -64,7 +64,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            while (precedenceOf(current) < precedenceOf(operators[operatorsIndex])) {
+            while (precedenceOf(current) < precedenceOf(operators[operatorsIndex-1]) && operatorsIndex-1 >= 0) {
                 out[outIndex++] = operators[--operatorsIndex];
                 operators[operatorsIndex] = '\0';
             }
@@ -74,7 +74,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         }
     }
 
-    while (operatorsIndex > 0 && outIndex < length)
+    while (operatorsIndex >= 0 && outIndex < length)
         out[outIndex++] = operators[--operatorsIndex];
 
     return RPN_SUCCESS;
