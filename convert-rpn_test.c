@@ -127,30 +127,36 @@ END_TEST
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
-    TCase *tc_core;
+    TCase *tc_validation;
+    TCase *tc_precedence;
+    TCase *tc_parse_basic;
 
     suite = suite_create("Convert Infix to Reverse Polish Notation");
-    tc_core = tcase_create("Core");
+    tc_validation = tcase_create("Validation");
+    tc_precedence = tcase_create("Precedence");
+    tc_parse_basic = tcase_create("Parsing Expressions - Basic");
 
-    tcase_add_test(tc_core, isValidOperator_withValidOperators_returnsTrue);
-    tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
-    tcase_add_test(tc_core, isValidOperand_withValidOperands_returnsTrue);
-    tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
-    tcase_add_test(tc_core, precedenceOf_withOperator_returnsCorrectOperatorPrecedence);
+    tcase_add_test(tc_validation, isValidOperator_withValidOperators_returnsTrue);
+    tcase_add_test(tc_validation, isValidOperator_withInvalidOperators_returnsFalse);
+    tcase_add_test(tc_validation, isValidOperand_withValidOperands_returnsTrue);
+    tcase_add_test(tc_validation, isValidOperator_withInvalidOperators_returnsFalse);
 
-    tcase_add_test(tc_core, infixToReversePolish_withValidArgs_returnsSuccess);
-    tcase_add_test(tc_core, infixToReversePolish_withInvalidArgs_returnsError);
-    tcase_add_test(tc_core, infixToReversePolish_withInvalidOperand_returnsError);
-    tcase_add_test(tc_core, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withTwoAdjacentOperands_returnsError);
-    tcase_add_test(tc_core, infixToReversePolish_withBinaryAddition_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withBinarySubtraction_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withBinaryMultiplication_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withBinaryDivision_outputsCorrectly);
-    tcase_add_test(tc_core, infixToReversePolish_withBinaryExponentiation_outputsCorrectly);
+    tcase_add_test(tc_precedence, precedenceOf_withOperator_returnsCorrectOperatorPrecedence);
 
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withInvalidArgs_returnsError);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withInvalidOperand_returnsError);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withTwoAdjacentOperands_returnsError);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryAddition_outputsCorrectly);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withBinarySubtraction_outputsCorrectly);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryMultiplication_outputsCorrectly);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryDivision_outputsCorrectly);
+    tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryExponentiation_outputsCorrectly);
 
-    suite_add_tcase(suite, tc_core);
+    suite_add_tcase(suite, tc_validation);
+    suite_add_tcase(suite, tc_precedence);
+    suite_add_tcase(suite, tc_parse_basic);
 
     return suite;
 }
