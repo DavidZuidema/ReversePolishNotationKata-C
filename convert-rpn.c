@@ -36,8 +36,9 @@ typedef enum { OPERAND, OPERATOR } SymbolType;
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
-    int inIndex = 0, outIndex = 0;
-    char current, operator;
+    int inIndex = 0, outIndex = 0, operatorsIndex = 0;
+    char current;
+    char operators[length];
     SymbolType expecting = OPERAND;
 
     if (in == NULL || out == NULL || length < 1)
@@ -57,22 +58,24 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
 
             out[outIndex++] = current;
             expecting = OPERATOR;
-
-            if (operator != '\0')
-            {
-                out[outIndex++] = operator;
-                operator = '\0';
-            }
         }
         else if (expecting == OPERATOR)
         {
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            operator = current;
+            while (precedenceOf(current) < precedenceOf(operators[operatorsIndex])) {
+                out[outIndex++] = operators[--operatorsIndex];
+                operators[operatorsIndex] = '\0';
+            }
+            operators[operatorsIndex++] = current;
+
             expecting = OPERAND;
         }
     }
+
+    while (operatorsIndex > 0 && outIndex < length)
+        out[outIndex++] = operators[--operatorsIndex];
 
     return RPN_SUCCESS;
 }
