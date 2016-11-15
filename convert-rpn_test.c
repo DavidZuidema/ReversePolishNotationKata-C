@@ -132,6 +132,14 @@ START_TEST(infixToReversePolish_withTwoOperatorExpression_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withMultipleOperatorExpression_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("l/m^n*o-p", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "lmn^/o*p-");
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -165,6 +173,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryExponentiation_outputsCorrectly);
 
     tcase_add_test(tc_parse_compound, infixToReversePolish_withTwoOperatorExpression_outputsCorrectly);
+    tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleOperatorExpression_outputsCorrectly);
 
     suite_add_tcase(suite, tc_validation);
     suite_add_tcase(suite, tc_precedence);
