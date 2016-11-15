@@ -124,17 +124,27 @@ START_TEST(infixToReversePolish_withBinaryExponentiation_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withTwoOperatorExpression_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a+b-c", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "abc-+");
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
     TCase *tc_validation;
     TCase *tc_precedence;
     TCase *tc_parse_basic;
+    TCase *tc_parse_compound;
 
     suite = suite_create("Convert Infix to Reverse Polish Notation");
     tc_validation = tcase_create("Validation");
     tc_precedence = tcase_create("Precedence");
     tc_parse_basic = tcase_create("Parsing Expressions - Basic");
+    tc_parse_compound = tcase_create("Parsing Expressions - Compound");
 
     tcase_add_test(tc_validation, isValidOperator_withValidOperators_returnsTrue);
     tcase_add_test(tc_validation, isValidOperator_withInvalidOperators_returnsFalse);
@@ -154,9 +164,12 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryDivision_outputsCorrectly);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryExponentiation_outputsCorrectly);
 
+    tcase_add_test(tc_parse_compound, infixToReversePolish_withTwoOperatorExpression_outputsCorrectly);
+
     suite_add_tcase(suite, tc_validation);
     suite_add_tcase(suite, tc_precedence);
     suite_add_tcase(suite, tc_parse_basic);
+    suite_add_tcase(suite, tc_parse_compound);
 
     return suite;
 }
