@@ -36,6 +36,16 @@ START_TEST(isValidOperand_withInvalidOperands_returnsFalse)
 }
 END_TEST
 
+START_TEST(precedenceOf_withOperator_returnsCorrectOperatorPrecedence)
+{
+    ck_assert_int_eq(1, precedenceOf('+'));
+    ck_assert_int_eq(2, precedenceOf('-'));
+    ck_assert_int_eq(3, precedenceOf('*'));
+    ck_assert_int_eq(4, precedenceOf('/'));
+    ck_assert_int_eq(5, precedenceOf('^'));
+}
+END_TEST
+
 START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
 {
     char actual[1];
@@ -126,6 +136,8 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
     tcase_add_test(tc_core, isValidOperand_withValidOperands_returnsTrue);
     tcase_add_test(tc_core, isValidOperator_withInvalidOperators_returnsFalse);
+    tcase_add_test(tc_core, precedenceOf_withOperator_returnsCorrectOperatorPrecedence);
+
     tcase_add_test(tc_core, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_core, infixToReversePolish_withInvalidArgs_returnsError);
     tcase_add_test(tc_core, infixToReversePolish_withInvalidOperand_returnsError);

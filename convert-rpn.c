@@ -20,6 +20,11 @@ int isValidOperand(char subject)
     return 93 < subject && subject < 123;
 }
 
+int precedenceOf(char subject)
+{
+    return 0;
+}
+
 typedef enum { OPERAND, OPERATOR } SymbolType;
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
