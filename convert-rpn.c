@@ -38,7 +38,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
     int inIndex = 0, outIndex = 0, operatorsIndex = 0;
     char current;
-    char operators[length];
+    char operators[length / 2];
     SymbolType expecting = OPERAND;
 
     if (in == NULL || out == NULL || length < 1)
