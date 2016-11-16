@@ -53,6 +53,11 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
 
         if (expecting == OPERAND)
         {
+            if ('(' == current) {
+                operators[operatorsIndex++] = '(';
+                continue;
+            }
+
             if (!isValidOperand(current))
                 return RPN_PARSE_ERROR_INVALID_OPERAND;
 
@@ -61,6 +66,15 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         }
         else if (expecting == OPERATOR)
         {
+            if (')' == current) {
+                while ('(' != operators[operatorsIndex-1] && operatorsIndex-1 >= 0) {
+                    out[outIndex++] = operators[--operatorsIndex];
+                    operators[operatorsIndex] = '\0';
+                }
+                operators[--operatorsIndex] = '\0';
+                continue;
+            }
+
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
