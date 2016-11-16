@@ -32,12 +32,24 @@ int precedenceOf(char subject)
     }
 }
 
+char pop(char *stack, int i)
+{
+    char value = stack[i];
+    stack[i] = '\0';
+    return value;
+}
+
+int isEmpty(int arrayIndex)
+{
+    return arrayIndex == 0;
+}
+
 typedef enum { OPERAND, OPERATOR } SymbolType;
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
     int inIndex = 0, outIndex = 0, operatorsIndex = 0;
-    char current;
+    char current, operator;
     char operators[length / 2];
     SymbolType expecting = OPERAND;
 
@@ -67,21 +79,17 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         else if (expecting == OPERATOR)
         {
             if (')' == current) {
-                while ('(' != operators[operatorsIndex-1] && operatorsIndex-1 >= 0) {
-                    out[outIndex++] = operators[--operatorsIndex];
-                    operators[operatorsIndex] = '\0';
-                }
-                operators[--operatorsIndex] = '\0';
+                while (!isEmpty(operatorsIndex) && (operator = pop(operators, --operatorsIndex)) != '(')
+                    out[outIndex++] = operator;
                 continue;
             }
 
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            while (precedenceOf(current) < precedenceOf(operators[operatorsIndex-1]) && operatorsIndex-1 >= 0) {
-                out[outIndex++] = operators[--operatorsIndex];
-                operators[operatorsIndex] = '\0';
-            }
+            while (!isEmpty(operatorsIndex) && precedenceOf(current) < precedenceOf(operators[operatorsIndex-1]))
+                out[outIndex++] = pop(operators, --operatorsIndex);
+
             operators[operatorsIndex++] = current;
 
             expecting = OPERAND;
@@ -89,7 +97,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
     }
 
     while (operatorsIndex >= 0 && outIndex < length)
-        out[outIndex++] = operators[--operatorsIndex];
+        out[outIndex++] = pop(operators, --operatorsIndex);
 
     return RPN_SUCCESS;
 }
