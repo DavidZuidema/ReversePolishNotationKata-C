@@ -162,6 +162,14 @@ START_TEST(infixToReversePolish_withMultipleParensExpression_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withAbsurdParensExpression_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("((((a+(b+(c+(d+(e+(f+(g+(h+(i+(j+(k+(l+(m+(n+o)))))))))))))))))", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "abcdefghijklmno++++++++++++++");
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -198,6 +206,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleOperatorExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withSimpleParensExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleParensExpression_outputsCorrectly);
+    tcase_add_test(tc_parse_compound, infixToReversePolish_withAbsurdParensExpression_outputsCorrectly);
 
     suite_add_tcase(suite, tc_validation);
     suite_add_tcase(suite, tc_precedence);
