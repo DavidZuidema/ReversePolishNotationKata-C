@@ -148,6 +148,20 @@ START_TEST(infixToReversePolish_withSimpleParensExpression_outputsCorrectly)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withMultipleParensExpression_outputsCorrectly)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    char actual2[MAX_EXPRESSION_LENGTH];
+    char actual3[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("((v/w)^x)*(y-z)", actual, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual, "vw/x^yz-*");
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("((l/(m^n))*o)-p", actual2, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual2, "lmn^/o*p-");
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("(a+g)*(((b-a)+c)^(c+(e*(d^f))))", actual3, MAX_EXPRESSION_LENGTH));
+    ck_assert_str_eq(actual3, "ag+ba-c+cedf^*+^*");
+}
+END_TEST
+
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
@@ -183,6 +197,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_compound, infixToReversePolish_withTwoOperatorExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleOperatorExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withSimpleParensExpression_outputsCorrectly);
+    tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleParensExpression_outputsCorrectly);
 
     suite_add_tcase(suite, tc_validation);
     suite_add_tcase(suite, tc_precedence);
