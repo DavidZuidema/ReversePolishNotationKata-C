@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <ctype.h>
 #include "convert-rpn.h"
 
 int isValidOperator(char subject)
@@ -17,7 +18,7 @@ int isValidOperator(char subject)
 
 int isValidOperand(char subject)
 {
-    return 93 < subject && subject < 123;
+    return islower(subject) > 0;
 }
 
 int precedenceOf(char subject)
