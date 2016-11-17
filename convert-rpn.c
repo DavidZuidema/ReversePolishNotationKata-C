@@ -48,11 +48,17 @@ int isEmpty(int arrayIndex)
 
 typedef enum { OPERAND, OPERATOR } SymbolType;
 
+struct Stack {
+    char *items;
+    int index;
+} Stack;
+
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
-    int inIndex = 0, outIndex = 0, operatorsIndex = 0;
+    int inIndex = 0, outIndex = 0;
     char current, operator;
-    char operators[length / 2];
+    char stackArray[length / 2];
+    struct Stack operators = { stackArray, 0 };
     SymbolType expecting = OPERAND;
 
     if (in == NULL || out == NULL || length < 1)
@@ -68,7 +74,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         if (expecting == OPERAND)
         {
             if ('(' == current) {
-                operators[operatorsIndex++] = '(';
+                operators.items[operators.index++] = '(';
                 continue;
             }
 
@@ -81,7 +87,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         else if (expecting == OPERATOR)
         {
             if (')' == current) {
-                while (!isEmpty(operatorsIndex) && (operator = pop(operators, --operatorsIndex)) != '(')
+                while (!isEmpty(operators.index) && (operator = pop(operators.items, --operators.index)) != '(')
                     out[outIndex++] = operator;
                 continue;
             }
@@ -89,17 +95,17 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            while (!isEmpty(operatorsIndex) && precedenceOf(current) < precedenceOf(operators[operatorsIndex-1]))
-                out[outIndex++] = pop(operators, --operatorsIndex);
+            while (!isEmpty(operators.index) && precedenceOf(current) < precedenceOf(operators.items[operators.index-1]))
+                out[outIndex++] = pop(operators.items, --operators.index);
 
-            operators[operatorsIndex++] = current;
+            operators.items[operators.index++] = current;
 
             expecting = OPERAND;
         }
     }
 
-    while (operatorsIndex >= 0 && outIndex < length)
-        out[outIndex++] = pop(operators, --operatorsIndex);
+    while (operators.index >= 0 && outIndex < length)
+        out[outIndex++] = pop(operators.items, --operators.index);
 
     return RPN_SUCCESS;
 }
