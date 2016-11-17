@@ -1,38 +1,40 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <check.h>
 #include "convert-rpn.h"
 
 #define MAX_EXPRESSION_LENGTH 64
+#define MINIMUM_VALID_LENGTH 1
 
 START_TEST(isValidOperator_withValidOperators_returnsTrue)
 {
-    ck_assert_int_eq(1, isValidOperator('+'));
-    ck_assert_int_eq(1, isValidOperator('-'));
-    ck_assert_int_eq(1, isValidOperator('*'));
-    ck_assert_int_eq(1, isValidOperator('/'));
-    ck_assert_int_eq(1, isValidOperator('^'));
+    ck_assert_int_eq(true, isValidOperator('+'));
+    ck_assert_int_eq(true, isValidOperator('-'));
+    ck_assert_int_eq(true, isValidOperator('*'));
+    ck_assert_int_eq(true, isValidOperator('/'));
+    ck_assert_int_eq(true, isValidOperator('^'));
 }
 END_TEST
 
 START_TEST(isValidOperator_withInvalidOperators_returnsFalse)
 {
-    ck_assert_int_eq(0, isValidOperator('%'));
+    ck_assert_int_eq(false, isValidOperator('%'));
 }
 END_TEST
 
 START_TEST(isValidOperand_withValidOperands_returnsTrue)
 {
-    ck_assert_int_eq(1, isValidOperand('a'));
-    ck_assert_int_eq(1, isValidOperand('b'));
-    ck_assert_int_eq(1, isValidOperand('c'));
-    ck_assert_int_eq(1, isValidOperand('z'));
+    ck_assert_int_eq(true, isValidOperand('a'));
+    ck_assert_int_eq(true, isValidOperand('b'));
+    ck_assert_int_eq(true, isValidOperand('c'));
+    ck_assert_int_eq(true, isValidOperand('z'));
 }
 END_TEST
 
 START_TEST(isValidOperand_withInvalidOperands_returnsFalse)
 {
-    ck_assert_int_eq(0, isValidOperand('`'));
-    ck_assert_int_eq(0, isValidOperand('{'));
+    ck_assert_int_eq(false, isValidOperand('`'));
+    ck_assert_int_eq(false, isValidOperand('{'));
 }
 END_TEST
 
@@ -48,8 +50,8 @@ END_TEST
 
 START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
 {
-    char actual[1];
-    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, 1));
+    char actual[MINIMUM_VALID_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MINIMUM_VALID_LENGTH));
 }
 END_TEST
 

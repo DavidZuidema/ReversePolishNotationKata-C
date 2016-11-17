@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <ctype.h>
 #include "convert-rpn.h"
 
@@ -10,9 +11,9 @@ int isValidOperator(char subject)
     case '*':
     case '/':
     case '^':
-        return 1;
+        return true;
     default:
-        return 0;
+        return false;
     }
 }
 
