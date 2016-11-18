@@ -5,6 +5,8 @@
 #include "convert-rpn.h"
 
 #define END_OF_STRING '\0'
+#define OPEN_PAREN '('
+#define CLOSE_PAREN ')'
 
 struct String {
     char *chars;
@@ -45,6 +47,11 @@ int precedenceOf(char subject)
     }
 }
 
+int halfOf(int value)
+{
+    return value / 2;
+}
+
 int isEmpty(struct String *string)
 {
     return string->length == 0;
@@ -76,22 +83,24 @@ char pop(struct String *string)
 
 int processOpenParen(struct String *operators, char current)
 {
-    if ('(' == current) {
-        push(operators, '(');
-        return 1;
-    }
-    return 0;
+    if (OPEN_PAREN != current)
+        return 0;
+
+    push(operators, OPEN_PAREN);
+    return 1;
 }
 
 int processCloseParen(struct String *operators, char current, struct String *output)
 {
     char operator;
-    if (')' == current) {
-        while (!isEmpty(operators) && (operator = pop(operators)) != '(')
-            push(output, operator);
-        return 1;
-    }
-    return 0;
+
+    if (CLOSE_PAREN != current)
+        return 0;
+
+    while (!isEmpty(operators) && (operator = pop(operators)) != OPEN_PAREN)
+        push(output, operator);
+
+    return 1;
 }
 
 RpnErrorType processOperand(char current, struct String *output)
@@ -119,8 +128,8 @@ RpnErrorType processOperator(struct String *operators, char current, struct Stri
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
     char current;
-    char operatorsChars[length / 2];
-    struct String operators = { operatorsChars, 0, length / 2 };
+    char operatorsChars[halfOf(length)];
+    struct String operators = { operatorsChars, 0, halfOf(length) };
     struct String output = { out, 0, length };
     RpnErrorType result;
     SymbolType expecting = OPERAND;
