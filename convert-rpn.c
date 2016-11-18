@@ -125,7 +125,7 @@ RpnErrorType processOperator(struct String *operators, char current, struct Stri
     return RPN_SUCCESS;
 }
 
-RpnErrorType infixToReversePolish(char *in, char *out, int length)
+RpnErrorType infixToReversePolish(const char *in, char *out, int length)
 {
     char current;
     char operatorsChars[halfOf(length)];
