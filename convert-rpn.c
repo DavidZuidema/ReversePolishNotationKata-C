@@ -1,7 +1,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <stdio.h>
 #include "convert-rpn.h"
+
+struct Stack {
+    char *items;
+    int index;
+} Stack;
+
+typedef enum { OPERAND, OPERATOR } SymbolType;
 
 int isValidOperator(char subject)
 {
@@ -34,24 +42,29 @@ int precedenceOf(char subject)
     }
 }
 
-char pop(char *stack, int i)
+int isEmpty(struct Stack *stack)
 {
-    char value = stack[i];
-    stack[i] = '\0';
+    return stack->index == 0;
+}
+
+char head(struct Stack *stack)
+{
+    return stack->items[stack->index-1];
+}
+
+void push(struct Stack *stack, char item)
+{
+    stack->items[stack->index] = item;
+    stack->index++;
+}
+
+char pop(struct Stack *stack)
+{
+    stack->index--;
+    char value = stack->items[stack->index];
+    stack->items[stack->index] = '\0';
     return value;
 }
-
-int isEmpty(int arrayIndex)
-{
-    return arrayIndex == 0;
-}
-
-typedef enum { OPERAND, OPERATOR } SymbolType;
-
-struct Stack {
-    char *items;
-    int index;
-} Stack;
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
@@ -74,7 +87,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         if (expecting == OPERAND)
         {
             if ('(' == current) {
-                operators.items[operators.index++] = '(';
+                push(&operators, '(');
                 continue;
             }
 
@@ -87,7 +100,7 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
         else if (expecting == OPERATOR)
         {
             if (')' == current) {
-                while (!isEmpty(operators.index) && (operator = pop(operators.items, --operators.index)) != '(')
+                while (!isEmpty(&operators) && (operator = pop(&operators)) != '(')
                     out[outIndex++] = operator;
                 continue;
             }
@@ -95,17 +108,20 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
             if (!isValidOperator(current))
                 return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-            while (!isEmpty(operators.index) && precedenceOf(current) < precedenceOf(operators.items[operators.index-1]))
-                out[outIndex++] = pop(operators.items, --operators.index);
+            while (!isEmpty(&operators) && precedenceOf(current) < precedenceOf(head(&operators)))
+                out[outIndex++] = pop(&operators);
 
-            operators.items[operators.index++] = current;
+            push(&operators, current);
 
             expecting = OPERAND;
         }
+
     }
 
-    while (operators.index >= 0 && outIndex < length)
-        out[outIndex++] = pop(operators.items, --operators.index);
+    while (!isEmpty(&operators) && outIndex < length - 1)
+        out[outIndex++] = pop(&operators);
+
+    out[outIndex] = '\0';
 
     return RPN_SUCCESS;
 }
