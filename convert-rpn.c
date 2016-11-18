@@ -4,10 +4,13 @@
 #include <stdio.h>
 #include "convert-rpn.h"
 
-struct Stack {
-    char *items;
-    int index;
-} Stack;
+#define END_OF_STRING '\0'
+
+struct String {
+    char *chars;
+    int length;
+    int size;
+} String;
 
 typedef enum { OPERAND, OPERATOR } SymbolType;
 
@@ -42,31 +45,36 @@ int precedenceOf(char subject)
     }
 }
 
-int isEmpty(struct Stack *stack)
+int isEmpty(struct String *string)
 {
-    return stack->index == 0;
+    return string->length == 0;
 }
 
-char head(struct Stack *stack)
+int isFull(struct String *string)
 {
-    return stack->items[stack->index-1];
+    return string->length >= string->size;
 }
 
-void push(struct Stack *stack, char item)
+char head(struct String *string)
 {
-    stack->items[stack->index] = item;
-    stack->index++;
+    return string->chars[string->length-1];
 }
 
-char pop(struct Stack *stack)
+void push(struct String *string, char item)
 {
-    stack->index--;
-    char value = stack->items[stack->index];
-    stack->items[stack->index] = '\0';
-    return value;
+    string->chars[string->length] = item;
+    string->length++;
 }
 
-int processOpenParen(struct Stack *operators, char current)
+char pop(struct String *string)
+{
+    string->length--;
+    char character = string->chars[string->length];
+    string->chars[string->length] = END_OF_STRING;
+    return character;
+}
+
+int processOpenParen(struct String *operators, char current)
 {
     if ('(' == current) {
         push(operators, '(');
@@ -75,38 +83,33 @@ int processOpenParen(struct Stack *operators, char current)
     return 0;
 }
 
-int processCloseParen(struct Stack *operators, char current, char *out, int *outIndex)
+int processCloseParen(struct String *operators, char current, struct String *output)
 {
     char operator;
     if (')' == current) {
-        while (!isEmpty(operators) && (operator = pop(operators)) != '(') {
-            out[*outIndex] = operator;
-            *outIndex += 1;
-        }
+        while (!isEmpty(operators) && (operator = pop(operators)) != '(')
+            push(output, operator);
         return 1;
     }
     return 0;
 }
 
-RpnErrorType processOperand(char current, char *out, int *outIndex)
+RpnErrorType processOperand(char current, struct String *output)
 {
     if (!isValidOperand(current))
         return RPN_PARSE_ERROR_INVALID_OPERAND;
 
-    out[*outIndex] = current;
-    *outIndex += 1;
+    push(output, current);
     return RPN_SUCCESS;
 }
 
-RpnErrorType processOperator(struct Stack *operators, char current, char *out, int *outIndex)
+RpnErrorType processOperator(struct String *operators, char current, struct String *output)
 {
     if (!isValidOperator(current))
         return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-    while (!isEmpty(operators) && precedenceOf(current) < precedenceOf(head(operators))) {
-        out[*outIndex] = pop(operators);
-        *outIndex += 1;
-    }
+    while (!isEmpty(operators) && precedenceOf(current) < precedenceOf(head(operators)))
+        push(output, pop(operators));
 
     push(operators, current);
 
@@ -115,21 +118,21 @@ RpnErrorType processOperator(struct Stack *operators, char current, char *out, i
 
 RpnErrorType infixToReversePolish(char *in, char *out, int length)
 {
-    int inIndex = 0, outIndex = 0;
     char current;
-    char stackArray[length / 2];
-    struct Stack operators = { stackArray, 0 };
+    char operatorsChars[length / 2];
+    struct String operators = { operatorsChars, 0, length / 2 };
+    struct String output = { out, 0, length };
     RpnErrorType result;
     SymbolType expecting = OPERAND;
 
     if (in == NULL || out == NULL || length < 1)
         return RPN_INVALID_ARGS;
 
-    while (inIndex < length && outIndex < length)
+    for (int inIndex = 0; inIndex < length; inIndex++)
     {
-        current = in[inIndex++];
+        current = in[inIndex];
 
-        if (current == '\0')
+        if (current == END_OF_STRING)
             break;
 
         if (expecting == OPERAND)
@@ -137,28 +140,27 @@ RpnErrorType infixToReversePolish(char *in, char *out, int length)
             if (processOpenParen(&operators, current))
                 continue;
 
-            if ((result = processOperand(current, out, &outIndex)) != RPN_SUCCESS)
+            if ((result = processOperand(current, &output)) != RPN_SUCCESS)
                 return result;
 
             expecting = OPERATOR;
         }
         else if (expecting == OPERATOR)
         {
-            if (processCloseParen(&operators, current, out, &outIndex))
+            if (processCloseParen(&operators, current, &output))
                 continue;
 
-            if ((result = processOperator(&operators, current, out, &outIndex)) != RPN_SUCCESS)
+            if ((result = processOperator(&operators, current, &output)) != RPN_SUCCESS)
                 return result;
 
             expecting = OPERAND;
         }
-
     }
 
-    while (!isEmpty(&operators) && outIndex < length - 1)
-        out[outIndex++] = pop(&operators);
+    while (!isEmpty(&operators) && !isFull(&output))
+        push(&output, pop(&operators));
 
-    out[outIndex] = '\0';
+    push(&output, END_OF_STRING);
 
     return RPN_SUCCESS;
 }
