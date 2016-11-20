@@ -57,5 +57,14 @@ Valid operators: `/[+-*/^]{1}/`
 
 Expected the next character to be an operator character and encountered something else. Every operand should be followed by an operator or `)`
 
+###`RPN_PARSE_ERROR_UNMATCHED_OPEN_PAREN (4)`
+
+Encountered an open paren `(` without a matching close paren `)`. For example: `a-(b+c`
+
+###`RPN_PARSE_ERROR_UNMATCHED_CLOSE_PAREN (5)`
+
+Encountered an close paren `)` without a matching open paren `(`. For example: `a+b)-c`
+
+
 ##Credits
 [Algorithm Approach - Pace CS](http://csis.pace.edu/~wolf/CS122/infix-postfix.htm)
