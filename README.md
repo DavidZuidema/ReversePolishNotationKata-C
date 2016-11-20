@@ -18,7 +18,7 @@ $ make clean	#Delete Build Files
 ```
 
 ##Approach
-`infixToReversePolish(char *in, char *out, int length)`
+`infixToReversePolish(const char *in, char *out, int length)`
 
 The library function requires input and output array parameters and a length parameter. The algorithm uses an array-list stack implementation.
 
