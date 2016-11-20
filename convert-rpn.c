@@ -59,7 +59,7 @@ int isEmpty(struct String *string)
 
 int isFull(struct String *string)
 {
-    return string->length >= string->size;
+    return string->length >= string->size - 1;
 }
 
 char head(struct String *string)
@@ -81,7 +81,12 @@ char pop(struct String *string)
     return character;
 }
 
-int processOpenParen(struct String *operators, char current)
+void finish(struct String *string)
+{
+    push(string, END_OF_STRING);
+}
+
+int processOpenParen(char current, struct String *operators)
 {
     if (OPEN_PAREN != current)
         return 0;
@@ -90,7 +95,7 @@ int processOpenParen(struct String *operators, char current)
     return 1;
 }
 
-int processCloseParen(struct String *operators, char current, struct String *output)
+int processCloseParen(char current, struct String *operators, struct String *output)
 {
     char operator;
 
@@ -112,7 +117,7 @@ RpnErrorType processOperand(char current, struct String *output)
     return RPN_SUCCESS;
 }
 
-RpnErrorType processOperator(struct String *operators, char current, struct String *output)
+RpnErrorType processOperator(char current, struct String *operators, struct String *output)
 {
     if (!isValidOperator(current))
         return RPN_PARSE_ERROR_INVALID_OPERATOR;
@@ -125,9 +130,40 @@ RpnErrorType processOperator(struct String *operators, char current, struct Stri
     return RPN_SUCCESS;
 }
 
+RpnErrorType processExpectedOperand(char current, struct String *operators, struct String *output, SymbolType *expecting)
+{
+    if (processOpenParen(current, operators))
+        return RPN_SUCCESS;
+
+    *expecting = OPERATOR;
+    return processOperand(current, output);
+}
+
+RpnErrorType processExpectedOperator(char current, struct String *operators, struct String *output, SymbolType *expecting)
+{
+    if (processCloseParen(current, operators, output))
+        return RPN_SUCCESS;
+
+    *expecting = OPERAND;
+    return processOperator(current, operators, output);
+}
+
+RpnErrorType processCharacter(char current, struct String *operators, struct String *output, SymbolType *expecting)
+{
+    if (*expecting == OPERAND)
+        return processExpectedOperand(current, operators, output, expecting);
+    else
+        return processExpectedOperator(current, operators, output, expecting);
+}
+
+void concatRemainingOperators(struct String *operators, struct String *output)
+{
+    while (!isEmpty(operators) && !isFull(output))
+        push(output, pop(operators));
+}
+
 RpnErrorType infixToReversePolish(const char *in, char *out, int length)
 {
-    char current;
     char operatorsChars[halfOf(length)];
     struct String operators = { operatorsChars, 0, halfOf(length) };
     struct String output = { out, 0, length };
@@ -137,39 +173,12 @@ RpnErrorType infixToReversePolish(const char *in, char *out, int length)
     if (in == NULL || out == NULL || length < 1)
         return RPN_INVALID_ARGS;
 
-    for (int inIndex = 0; inIndex < length; inIndex++)
+    for (int i = 0; i < length && in[i] != END_OF_STRING; i++)
     {
-        current = in[inIndex];
-
-        if (current == END_OF_STRING)
-            break;
-
-        if (expecting == OPERAND)
-        {
-            if (processOpenParen(&operators, current))
-                continue;
-
-            if ((result = processOperand(current, &output)) != RPN_SUCCESS)
-                return result;
-
-            expecting = OPERATOR;
-        }
-        else if (expecting == OPERATOR)
-        {
-            if (processCloseParen(&operators, current, &output))
-                continue;
-
-            if ((result = processOperator(&operators, current, &output)) != RPN_SUCCESS)
-                return result;
-
-            expecting = OPERAND;
-        }
+        if ((result = processCharacter(in[i], &operators, &output, &expecting)) != RPN_SUCCESS)
+            return result;
     }
-
-    while (!isEmpty(&operators) && !isFull(&output))
-        push(&output, pop(&operators));
-
-    push(&output, END_OF_STRING);
-
+    concatRemainingOperators(&operators, &output);
+    finish(&output);
     return RPN_SUCCESS;
 }
