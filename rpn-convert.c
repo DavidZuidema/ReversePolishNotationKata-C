@@ -46,26 +46,20 @@ static int halfOf(int value)
     return value / 2;
 }
 
-static int processOpenParen(char current, struct String *operators)
+static RpnErrorType processOpenParen(char current, struct String *operators)
 {
-    if (OPEN_PAREN != current)
-        return 0;
-
-    push(operators, OPEN_PAREN);
-    return 1;
+    push(operators, current);
+    return RPN_SUCCESS;
 }
 
-static int processCloseParen(char current, struct String *operators, struct String *output)
+static RpnErrorType processCloseParen(char current, struct String *operators, struct String *output)
 {
     char operator;
-
-    if (CLOSE_PAREN != current)
-        return 0;
 
     while (!isEmpty(operators) && (operator = pop(operators)) != OPEN_PAREN)
         push(output, operator);
 
-    return 1;
+    return operator == OPEN_PAREN ? RPN_SUCCESS : RPN_PARSE_ERROR_UNMATCHED_CLOSE_PAREN;
 }
 
 static RpnErrorType processOperand(char current, struct String *output)
@@ -92,8 +86,8 @@ static RpnErrorType processOperator(char current, struct String *operators, stru
 
 static RpnErrorType processExpectedOperand(char current, struct String *operators, struct String *output, SymbolType *expecting)
 {
-    if (processOpenParen(current, operators))
-        return RPN_SUCCESS;
+    if (OPEN_PAREN == current)
+        return processOpenParen(current, operators);
 
     *expecting = OPERATOR;
     return processOperand(current, output);
@@ -101,8 +95,8 @@ static RpnErrorType processExpectedOperand(char current, struct String *operator
 
 static RpnErrorType processExpectedOperator(char current, struct String *operators, struct String *output, SymbolType *expecting)
 {
-    if (processCloseParen(current, operators, output))
-        return RPN_SUCCESS;
+    if (CLOSE_PAREN == current)
+        return processCloseParen(current, operators, output);
 
     *expecting = OPERAND;
     return processOperator(current, operators, output);
