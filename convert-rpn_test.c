@@ -6,48 +6,6 @@
 #define MAX_EXPRESSION_LENGTH 64
 #define MINIMUM_VALID_LENGTH 1
 
-START_TEST(isValidOperator_withValidOperators_returnsTrue)
-{
-    ck_assert_int_eq(true, isValidOperator('+'));
-    ck_assert_int_eq(true, isValidOperator('-'));
-    ck_assert_int_eq(true, isValidOperator('*'));
-    ck_assert_int_eq(true, isValidOperator('/'));
-    ck_assert_int_eq(true, isValidOperator('^'));
-}
-END_TEST
-
-START_TEST(isValidOperator_withInvalidOperators_returnsFalse)
-{
-    ck_assert_int_eq(false, isValidOperator('%'));
-}
-END_TEST
-
-START_TEST(isValidOperand_withValidOperands_returnsTrue)
-{
-    ck_assert_int_eq(true, isValidOperand('a'));
-    ck_assert_int_eq(true, isValidOperand('b'));
-    ck_assert_int_eq(true, isValidOperand('c'));
-    ck_assert_int_eq(true, isValidOperand('z'));
-}
-END_TEST
-
-START_TEST(isValidOperand_withInvalidOperands_returnsFalse)
-{
-    ck_assert_int_eq(false, isValidOperand('`'));
-    ck_assert_int_eq(false, isValidOperand('{'));
-}
-END_TEST
-
-START_TEST(precedenceOf_withOperator_returnsCorrectOperatorPrecedence)
-{
-    ck_assert_int_eq(1, precedenceOf('+'));
-    ck_assert_int_eq(2, precedenceOf('-'));
-    ck_assert_int_eq(3, precedenceOf('*'));
-    ck_assert_int_eq(4, precedenceOf('/'));
-    ck_assert_int_eq(5, precedenceOf('^'));
-}
-END_TEST
-
 START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
 {
     char actual[MINIMUM_VALID_LENGTH];
@@ -175,23 +133,12 @@ END_TEST
 Suite * suite_convert_rpn_create(void)
 {
     Suite *suite;
-    TCase *tc_validation;
-    TCase *tc_precedence;
     TCase *tc_parse_basic;
     TCase *tc_parse_compound;
 
     suite = suite_create("Convert Infix to Reverse Polish Notation");
-    tc_validation = tcase_create("Validation");
-    tc_precedence = tcase_create("Precedence");
     tc_parse_basic = tcase_create("Parsing Expressions - Basic");
     tc_parse_compound = tcase_create("Parsing Expressions - Compound");
-
-    tcase_add_test(tc_validation, isValidOperator_withValidOperators_returnsTrue);
-    tcase_add_test(tc_validation, isValidOperator_withInvalidOperators_returnsFalse);
-    tcase_add_test(tc_validation, isValidOperand_withValidOperands_returnsTrue);
-    tcase_add_test(tc_validation, isValidOperator_withInvalidOperators_returnsFalse);
-
-    tcase_add_test(tc_precedence, precedenceOf_withOperator_returnsCorrectOperatorPrecedence);
 
     tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withInvalidArgs_returnsError);
@@ -210,8 +157,6 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleParensExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withAbsurdParensExpression_outputsCorrectly);
 
-    suite_add_tcase(suite, tc_validation);
-    suite_add_tcase(suite, tc_precedence);
     suite_add_tcase(suite, tc_parse_basic);
     suite_add_tcase(suite, tc_parse_compound);
 

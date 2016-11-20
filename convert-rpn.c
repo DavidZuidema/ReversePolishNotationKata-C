@@ -16,7 +16,7 @@ struct String {
 
 typedef enum { OPERAND, OPERATOR } SymbolType;
 
-int isValidOperator(char subject)
+static int isValidOperator(char subject)
 {
     switch (subject) {
     case '+':
@@ -30,12 +30,12 @@ int isValidOperator(char subject)
     }
 }
 
-int isValidOperand(char subject)
+static int isValidOperand(char subject)
 {
     return islower(subject) > 0;
 }
 
-int precedenceOf(char subject)
+static int precedenceOf(char subject)
 {
     switch (subject) {
     case '^': return 5;
@@ -86,7 +86,7 @@ void finish(struct String *string)
     push(string, END_OF_STRING);
 }
 
-int processOpenParen(char current, struct String *operators)
+static int processOpenParen(char current, struct String *operators)
 {
     if (OPEN_PAREN != current)
         return 0;
@@ -95,7 +95,7 @@ int processOpenParen(char current, struct String *operators)
     return 1;
 }
 
-int processCloseParen(char current, struct String *operators, struct String *output)
+static int processCloseParen(char current, struct String *operators, struct String *output)
 {
     char operator;
 
@@ -108,7 +108,7 @@ int processCloseParen(char current, struct String *operators, struct String *out
     return 1;
 }
 
-RpnErrorType processOperand(char current, struct String *output)
+static RpnErrorType processOperand(char current, struct String *output)
 {
     if (!isValidOperand(current))
         return RPN_PARSE_ERROR_INVALID_OPERAND;
@@ -117,7 +117,7 @@ RpnErrorType processOperand(char current, struct String *output)
     return RPN_SUCCESS;
 }
 
-RpnErrorType processOperator(char current, struct String *operators, struct String *output)
+static RpnErrorType processOperator(char current, struct String *operators, struct String *output)
 {
     if (!isValidOperator(current))
         return RPN_PARSE_ERROR_INVALID_OPERATOR;
@@ -130,7 +130,7 @@ RpnErrorType processOperator(char current, struct String *operators, struct Stri
     return RPN_SUCCESS;
 }
 
-RpnErrorType processExpectedOperand(char current, struct String *operators, struct String *output, SymbolType *expecting)
+static RpnErrorType processExpectedOperand(char current, struct String *operators, struct String *output, SymbolType *expecting)
 {
     if (processOpenParen(current, operators))
         return RPN_SUCCESS;
@@ -139,7 +139,7 @@ RpnErrorType processExpectedOperand(char current, struct String *operators, stru
     return processOperand(current, output);
 }
 
-RpnErrorType processExpectedOperator(char current, struct String *operators, struct String *output, SymbolType *expecting)
+static RpnErrorType processExpectedOperator(char current, struct String *operators, struct String *output, SymbolType *expecting)
 {
     if (processCloseParen(current, operators, output))
         return RPN_SUCCESS;
@@ -148,7 +148,7 @@ RpnErrorType processExpectedOperator(char current, struct String *operators, str
     return processOperator(current, operators, output);
 }
 
-RpnErrorType processCharacter(char current, struct String *operators, struct String *output, SymbolType *expecting)
+static RpnErrorType processCharacter(char current, struct String *operators, struct String *output, SymbolType *expecting)
 {
     if (*expecting == OPERAND)
         return processExpectedOperand(current, operators, output, expecting);
@@ -156,7 +156,7 @@ RpnErrorType processCharacter(char current, struct String *operators, struct Str
         return processExpectedOperator(current, operators, output, expecting);
 }
 
-void concatRemainingOperators(struct String *operators, struct String *output)
+static void concatRemainingOperators(struct String *operators, struct String *output)
 {
     while (!isEmpty(operators) && !isFull(output))
         push(output, pop(operators));
