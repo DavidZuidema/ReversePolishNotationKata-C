@@ -6,13 +6,9 @@
 #define MAX_EXPRESSION_LENGTH 64
 #define MINIMUM_VALID_LENGTH 1
 
-START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
-{
-    char actual[MINIMUM_VALID_LENGTH];
-    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MINIMUM_VALID_LENGTH));
-}
-END_TEST
-
+/*
+ * Test Case: Parsing Errors
+ */
 START_TEST(infixToReversePolish_withInvalidArgs_returnsError)
 {
     char actual[MAX_EXPRESSION_LENGTH];
@@ -29,18 +25,28 @@ START_TEST(infixToReversePolish_withInvalidOperand_returnsError)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withTwoAdjacentOperands_returnsError)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_PARSE_ERROR_INVALID_OPERATOR, infixToReversePolish("aa", actual, MAX_EXPRESSION_LENGTH));
+}
+END_TEST
+
+/*
+ * Test Case: Parsing - Basic
+ */
+START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
+{
+    char actual[MINIMUM_VALID_LENGTH];
+    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MINIMUM_VALID_LENGTH));
+}
+END_TEST
+
 START_TEST(infixToReversePolish_withSingleOperandExp_outputsCorrectly)
 {
     char actual[MAX_EXPRESSION_LENGTH];
     ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MAX_EXPRESSION_LENGTH));
     ck_assert_str_eq(actual, "a");
-}
-END_TEST
-
-START_TEST(infixToReversePolish_withTwoAdjacentOperands_returnsError)
-{
-    char actual[MAX_EXPRESSION_LENGTH];
-    ck_assert_int_eq(RPN_PARSE_ERROR_INVALID_OPERATOR, infixToReversePolish("aa", actual, MAX_EXPRESSION_LENGTH));
 }
 END_TEST
 
@@ -84,6 +90,9 @@ START_TEST(infixToReversePolish_withBinaryExponentiation_outputsCorrectly)
 }
 END_TEST
 
+/*
+ * Test Case: Parsing - Compound
+ */
 START_TEST(infixToReversePolish_withTwoOperatorExpression_outputsCorrectly)
 {
     char actual[MAX_EXPRESSION_LENGTH];
@@ -130,21 +139,27 @@ START_TEST(infixToReversePolish_withAbsurdParensExpression_outputsCorrectly)
 }
 END_TEST
 
-Suite * suite_convert_rpn_create(void)
+/*
+ * Suite: RPN Convert
+ */
+Suite * suite_rpn_convert_create(void)
 {
     Suite *suite;
+    TCase *tc_parse_error;
     TCase *tc_parse_basic;
     TCase *tc_parse_compound;
 
     suite = suite_create("Convert Infix to Reverse Polish Notation");
-    tc_parse_basic = tcase_create("Parsing Expressions - Basic");
-    tc_parse_compound = tcase_create("Parsing Expressions - Compound");
+    tc_parse_error = tcase_create("Parsing Errors");
+    tc_parse_basic = tcase_create("Parsing Basic");
+    tc_parse_compound = tcase_create("Parsing Compound");
+
+    tcase_add_test(tc_parse_error, infixToReversePolish_withInvalidArgs_returnsError);
+    tcase_add_test(tc_parse_error, infixToReversePolish_withInvalidOperand_returnsError);
+    tcase_add_test(tc_parse_error, infixToReversePolish_withTwoAdjacentOperands_returnsError);
 
     tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
-    tcase_add_test(tc_parse_basic, infixToReversePolish_withInvalidArgs_returnsError);
-    tcase_add_test(tc_parse_basic, infixToReversePolish_withInvalidOperand_returnsError);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
-    tcase_add_test(tc_parse_basic, infixToReversePolish_withTwoAdjacentOperands_returnsError);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryAddition_outputsCorrectly);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinarySubtraction_outputsCorrectly);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryMultiplication_outputsCorrectly);
@@ -157,6 +172,7 @@ Suite * suite_convert_rpn_create(void)
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleParensExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withAbsurdParensExpression_outputsCorrectly);
 
+    suite_add_tcase(suite, tc_parse_error);
     suite_add_tcase(suite, tc_parse_basic);
     suite_add_tcase(suite, tc_parse_compound);
 
@@ -169,7 +185,7 @@ int main(void) {
     Suite *suite;
     SRunner *suiteRunner;
 
-    suite = suite_convert_rpn_create();
+    suite = suite_rpn_convert_create();
     suiteRunner = srunner_create(suite);
 
     srunner_run_all(suiteRunner, CK_NORMAL);
