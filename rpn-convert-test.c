@@ -32,6 +32,13 @@ START_TEST(infixToReversePolish_withTwoAdjacentOperands_returnsError)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withUnmatchedOpenParen_returnsError)
+{
+    char actual[MAX_EXPRESSION_LENGTH];
+    ck_assert_int_eq(RPN_PARSE_ERROR_UNMATCHED_OPEN_PAREN, infixToReversePolish("a+(", actual, MAX_EXPRESSION_LENGTH));
+}
+END_TEST
+
 /*
  * Test Case: Parsing - Basic
  */
@@ -157,6 +164,7 @@ Suite * suite_rpn_convert_create(void)
     tcase_add_test(tc_parse_error, infixToReversePolish_withInvalidArgs_returnsError);
     tcase_add_test(tc_parse_error, infixToReversePolish_withInvalidOperand_returnsError);
     tcase_add_test(tc_parse_error, infixToReversePolish_withTwoAdjacentOperands_returnsError);
+    tcase_add_test(tc_parse_error, infixToReversePolish_withUnmatchedOpenParen_returnsError);
 
     tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
