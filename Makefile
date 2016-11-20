@@ -1,14 +1,24 @@
-check: convert-rpn_test
-	./bin/convert-rpn_test
+CC = gcc
+CFLAGS = -Wall -std=c99
+LIBCHECK = `pkg-config --cflags --libs check`
 
-build: convert-rpn.o
+OBJ_DIR = obj
+BIN_DIR = bin
 
-convert-rpn_test: convert-rpn.o convert-rpn_test.c
-	mkdir -p bin
-	gcc $^ `pkg-config --cflags --libs check` -o bin/$@
+check: rpn-convert-test
+	./bin/rpn-convert-test
 
-convert-rpn.o: convert-rpn.c convert-rpn.h
-	gcc -Wall -std=c99 -c $^
+build: rpn-convert.o
 
+rpn-convert-test: rpn-convert-test.o rpn-convert.o rpn-string.o | $(BIN_DIR)
+	$(CC) $(CFLAGS) $^ $(LIBCHECK) -o $(BIN_DIR)/$@
+
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+.PHONY: clean
 clean:
 	rm -rf *.o *.h.gch bin

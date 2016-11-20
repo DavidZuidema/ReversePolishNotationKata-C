@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <check.h>
-#include "convert-rpn.h"
+#include "rpn-convert.h"
 
 #define MAX_EXPRESSION_LENGTH 64
 #define MINIMUM_VALID_LENGTH 1
