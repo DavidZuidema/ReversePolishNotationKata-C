@@ -116,10 +116,16 @@ static RpnErrorType processCharacter(char current, struct String *operators, str
         return processExpectedOperator(current, operators, output, expecting);
 }
 
-static void concatRemainingOperators(struct String *operators, struct String *output)
+static RpnErrorType concatRemainingOperators(struct String *operators, struct String *output)
 {
-    while (!isEmpty(operators) && !isFull(output))
-        push(output, pop(operators));
+    char operator;
+    while (!isEmpty(operators) && !isFull(output)) {
+        operator = pop(operators);
+        if (operator == OPEN_PAREN)
+            return RPN_PARSE_ERROR_UNMATCHED_OPEN_PAREN;
+        push(output, operator);
+    }
+    return RPN_SUCCESS;
 }
 
 RpnErrorType infixToReversePolish(const char *in, char *out, int length)
@@ -133,12 +139,14 @@ RpnErrorType infixToReversePolish(const char *in, char *out, int length)
     if (in == NULL || out == NULL || length < 1)
         return RPN_INVALID_ARGS;
 
-    for (int i = 0; i < length && in[i] != END_OF_STRING; i++)
-    {
+    for (int i = 0; i < length && in[i] != END_OF_STRING; i++) {
         if ((result = processCharacter(in[i], &operators, &output, &expecting)) != RPN_SUCCESS)
             return result;
     }
-    concatRemainingOperators(&operators, &output);
+
+    if ((result = concatRemainingOperators(&operators, &output)) != RPN_SUCCESS)
+        return result;
+
     finish(&output);
     return RPN_SUCCESS;
 }
