@@ -56,13 +56,6 @@ END_TEST
 /*
  * Test Case: Parsing - Basic
  */
-START_TEST(infixToReversePolish_withValidArgs_returnsSuccess)
-{
-    char actual[MINIMUM_VALID_LENGTH];
-    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("a", actual, MINIMUM_VALID_LENGTH));
-}
-END_TEST
-
 START_TEST(infixToReversePolish_withSingleOperandExp_outputsCorrectly)
 {
     char actual[MAX_EXPRESSION_LENGTH];
@@ -174,7 +167,6 @@ Suite * suite_rpn_convert_create(void)
     tcase_add_test(tc_parse_error, infixToReversePolish_withUnmatchedCloseParen_returnsError);
     tcase_add_test(tc_parse_error, infixToReversePolish_withOnlyOpenParens_returnsError);
 
-    tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinaryAddition_outputsCorrectly);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withBinarySubtraction_outputsCorrectly);
