@@ -1,35 +1,43 @@
 #include "rpn-string.h"
 
-int isEmpty(struct String *string)
+int isEmptyString(struct String *string)
 {
     return string->length == 0;
 }
 
-int isFull(struct String *string)
+int isFullString(struct String *string)
 {
     return string->length >= string->size - 1;
 }
 
-char head(struct String *string)
+char lastCharOfString(struct String *string)
 {
     return string->chars[string->length-1];
 }
 
-void push(struct String *string, char item)
+void pushString(struct String *string, char item)
 {
+    if (isFullString(string))
+        return;
+
     string->chars[string->length] = item;
     string->length++;
 }
 
-char pop(struct String *string)
+char popString(struct String *string)
 {
+    char character;
+
+    if (isEmptyString(string))
+        return END_OF_STRING;
+
     string->length--;
-    char character = string->chars[string->length];
+    character = string->chars[string->length];
     string->chars[string->length] = END_OF_STRING;
     return character;
 }
 
-void finish(struct String *string)
+void terminateString(struct String *string)
 {
-    push(string, END_OF_STRING);
+    pushString(string, END_OF_STRING);
 }

@@ -48,7 +48,7 @@ static int halfOf(int value)
 
 static RpnErrorType processOpenParen(char current, struct String *operators)
 {
-    push(operators, current);
+    pushString(operators, current);
     return RPN_SUCCESS;
 }
 
@@ -56,8 +56,8 @@ static RpnErrorType processCloseParen(char current, struct String *operators, st
 {
     char operator;
 
-    while (!isEmpty(operators) && (operator = pop(operators)) != OPEN_PAREN)
-        push(output, operator);
+    while (!isEmptyString(operators) && (operator = popString(operators)) != OPEN_PAREN)
+        pushString(output, operator);
 
     return operator == OPEN_PAREN ? RPN_SUCCESS : RPN_PARSE_ERROR_UNMATCHED_CLOSE_PAREN;
 }
@@ -67,7 +67,7 @@ static RpnErrorType processOperand(char current, struct String *output)
     if (!isValidOperand(current))
         return RPN_PARSE_ERROR_INVALID_OPERAND;
 
-    push(output, current);
+    pushString(output, current);
     return RPN_SUCCESS;
 }
 
@@ -76,10 +76,10 @@ static RpnErrorType processOperator(char current, struct String *operators, stru
     if (!isValidOperator(current))
         return RPN_PARSE_ERROR_INVALID_OPERATOR;
 
-    while (!isEmpty(operators) && precedenceOf(current) < precedenceOf(head(operators)))
-        push(output, pop(operators));
+    while (!isEmptyString(operators) && precedenceOf(current) < precedenceOf(lastCharOfString(operators)))
+        pushString(output, popString(operators));
 
-    push(operators, current);
+    pushString(operators, current);
 
     return RPN_SUCCESS;
 }
@@ -113,11 +113,11 @@ static RpnErrorType processCharacter(char current, struct String *operators, str
 static RpnErrorType concatRemainingOperators(struct String *operators, struct String *output)
 {
     char operator;
-    while (!isEmpty(operators) && !isFull(output)) {
-        operator = pop(operators);
+    while (!isEmptyString(operators) && !isFullString(output)) {
+        operator = popString(operators);
         if (operator == OPEN_PAREN)
             return RPN_PARSE_ERROR_UNMATCHED_OPEN_PAREN;
-        push(output, operator);
+        pushString(output, operator);
     }
     return RPN_SUCCESS;
 }
@@ -141,6 +141,6 @@ RpnErrorType infixToReversePolish(const char *in, char *out, int length)
     if ((result = concatRemainingOperators(&operators, &output)) != RPN_SUCCESS)
         return result;
 
-    finish(&output);
+    terminateString(&output);
     return RPN_SUCCESS;
 }

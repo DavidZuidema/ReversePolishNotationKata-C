@@ -9,11 +9,11 @@ struct String {
     int size;
 } String;
 
-int isEmpty(struct String *string);
-int isFull(struct String *string);
-char head(struct String *string);
-void push(struct String *string, char item);
-char pop(struct String *string);
-void finish(struct String *string);
+int isEmptyString(struct String *string);
+int isFullString(struct String *string);
+char lastCharOfString(struct String *string);
+void pushString(struct String *string, char item);
+char popString(struct String *string);
+void terminateString(struct String *string);
 
 #endif

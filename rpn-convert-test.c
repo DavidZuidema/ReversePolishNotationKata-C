@@ -46,6 +46,13 @@ START_TEST(infixToReversePolish_withUnmatchedCloseParen_returnsError)
 }
 END_TEST
 
+START_TEST(infixToReversePolish_withOnlyOpenParens_returnsError)
+{
+    char actual[4];
+    ck_assert_int_eq(RPN_PARSE_ERROR_UNMATCHED_OPEN_PAREN, infixToReversePolish("((((", actual, 4));
+}
+END_TEST
+
 /*
  * Test Case: Parsing - Basic
  */
@@ -145,14 +152,6 @@ START_TEST(infixToReversePolish_withMultipleParensExpression_outputsCorrectly)
 }
 END_TEST
 
-START_TEST(infixToReversePolish_withAbsurdParensExpression_outputsCorrectly)
-{
-    char actual[MAX_EXPRESSION_LENGTH];
-    ck_assert_int_eq(RPN_SUCCESS, infixToReversePolish("((((a+(b+(c+(d+(e+(f+(g+(h+(i+(j+(k+(l+(m+(n+o)))))))))))))))))", actual, MAX_EXPRESSION_LENGTH));
-    ck_assert_str_eq(actual, "abcdefghijklmno++++++++++++++");
-}
-END_TEST
-
 /*
  * Suite: RPN Convert
  */
@@ -173,6 +172,7 @@ Suite * suite_rpn_convert_create(void)
     tcase_add_test(tc_parse_error, infixToReversePolish_withTwoAdjacentOperands_returnsError);
     tcase_add_test(tc_parse_error, infixToReversePolish_withUnmatchedOpenParen_returnsError);
     tcase_add_test(tc_parse_error, infixToReversePolish_withUnmatchedCloseParen_returnsError);
+    tcase_add_test(tc_parse_error, infixToReversePolish_withOnlyOpenParens_returnsError);
 
     tcase_add_test(tc_parse_basic, infixToReversePolish_withValidArgs_returnsSuccess);
     tcase_add_test(tc_parse_basic, infixToReversePolish_withSingleOperandExp_outputsCorrectly);
@@ -186,7 +186,6 @@ Suite * suite_rpn_convert_create(void)
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleOperatorExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withSimpleParensExpression_outputsCorrectly);
     tcase_add_test(tc_parse_compound, infixToReversePolish_withMultipleParensExpression_outputsCorrectly);
-    tcase_add_test(tc_parse_compound, infixToReversePolish_withAbsurdParensExpression_outputsCorrectly);
 
     suite_add_tcase(suite, tc_parse_error);
     suite_add_tcase(suite, tc_parse_basic);
