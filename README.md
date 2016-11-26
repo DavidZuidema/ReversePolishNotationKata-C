@@ -10,6 +10,13 @@
 $ sudo apt-get install gcc make check
 ```
 
+##Notes/Assumptions
+* The RPN to Infix implementation is omitted intentionally after receiving new instructions that the second half of the exercise is now optional due to the unexpectedly high number of hours to complete.
+* The `rpn-string` library intentionally does not report errors. It's intended only for use with `rpn-convert`, not as a general purpose String library.
+* The `in` array and `out` array are at least as large as the `length` parameter and the caller is responsible for this invariant. No errors are reported by `rpn-convert` for mismatched string lengths.
+* ~`length / 2` bytes of stack memory are available in addition to the `in` and `out` array.
+* All of these assumptions could be coded for in the event that the production application required it.
+
 ##Make Targets
 ```
 $ make check	#Run Tests
@@ -20,7 +27,7 @@ $ make clean	#Delete Build Files
 ##Approach
 `infixToReversePolish(const char *in, char *out, int length)`
 
-The library function requires input and output array parameters and a length parameter. The algorithm uses an array-list stack implementation.
+The library function requires input and output array parameters and a length parameter. The algorithm uses a fixed length array-list stack implementation.
 
 ###Advantages
 * Faster.
@@ -32,10 +39,6 @@ The library function requires input and output array parameters and a length par
 * Always allocates maximum memory.
 * Longer initialization. All memory allocated up front.
 * All trade-offs worsen as `length` increases.
-
-##Assumptions
-* The `in` array and `out` array are at least as large as the `length` parameter.
-* `length / 2` bytes of stack memory are available.
 
 ##Error Codes
 
